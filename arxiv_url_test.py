@@ -5,6 +5,10 @@ from datetime import date
 
 
 class ArxivUrlTest(unittest.TestCase):
+    def test_get_keyword_param(self):
+        keyword = 'machine learning'
+        self.assertEqual(arxiv_url.get_keyword_param(keyword), 'terms-0-term=machine+learning&terms-0-field=all')
+
     def test_get_classification_param(self):
         self.assertEqual(arxiv_url.get_classification_param(arxiv_classification.computer_science()), 'classification-computer_science=y')
         self.assertEqual(arxiv_url.get_classification_param(arxiv_classification.statistics()), 'classification-statistics=y')
@@ -29,11 +33,11 @@ class ArxivUrlTest(unittest.TestCase):
         self.assertEqual(arxiv_url.get_date_filter_by_param(filter_by=filter_by), 'date-filter_by=date_range')
 
     def test_get_url(self):
+        keyword = "machine learning"
         start = date(2018, 6, 8)
         end = date(2018, 7, 8)
-        url = arxiv_url.get_url(classification=[arxiv_classification.computer_science(), arxiv_classification.statistics()], start=start, end=end, size=50, order='announced_date_first')
-        self.assertEqual(url, 'https://arxiv.org/search/advanced?advanced=&terms-0-operator=AND&terms-0-term=&terms-0-field=title&classification-computer_science=y&classification-statistics=y&date-from_date=2018-06-08&date-to_date=2018-07-08&size=50&order=-announced_date_first')
-
+        url = arxiv_url.get_url(keyword=keyword, classification=[arxiv_classification.computer_science(), arxiv_classification.statistics()], start=start, end=end, size=50, order='announced_date_first')
+        self.assertEqual(url, 'https://arxiv.org/search/advanced?advanced=&terms-0-operator=AND&terms-0-term=machine+learning&terms-0-field=all&classification-computer_science=y&classification-statistics=y&date-from_date=2018-06-08&date-to_date=2018-07-08&size=50&order=-announced_date_first')
 
 if __name__ == '__main__':
     unittest.main()

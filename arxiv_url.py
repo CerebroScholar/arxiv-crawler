@@ -1,7 +1,12 @@
 from datetime import date
 
 
-BASE_URL = "https://arxiv.org/search/advanced?advanced=&terms-0-operator=AND&terms-0-term=&terms-0-field=title"
+BASE_URL = "https://arxiv.org/search/advanced?advanced=&terms-0-operator=AND"
+
+
+# no operator options yet
+def get_keyword_param(keyword: str):
+    return "&".join(["=".join(["terms-0-term", "+".join(keyword.split(" "))]), "terms-0-field=all"])
 
 
 # This function should called with arxiv_classification functinos
@@ -30,7 +35,7 @@ def get_date_filter_by_param(filter_by: str):
     return "=".join(["date-filter_by", filter_by])
 
 
-def get_url(classification: list, start, end, size, order):
+def get_url(keyword: str, classification: list, start, end, size, order):
     classification = [get_classification_param(c) for c in classification]
-    return "&".join([BASE_URL, *classification, get_date_range_param(start, end), get_size_param(size), get_order_param(order)])
+    return "&".join([BASE_URL, get_keyword_param(keyword), *classification, get_date_range_param(start, end), get_size_param(size), get_order_param(order)])
 

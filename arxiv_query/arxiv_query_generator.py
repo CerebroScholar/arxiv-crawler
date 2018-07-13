@@ -1,5 +1,5 @@
 from typing import NewType
-from arxiv_classification import Classification
+from arxiv_classification import Classification, get_all_category_list
 from .arxiv_query_data import QueryData, CategoryList
 
 
@@ -43,7 +43,9 @@ def generate_category_query(category: Classification) -> CategoryQuery:
     return generate_search_query_element('cat', category)
 
 
-def generate_categories_query(categories: CategoryList) -> CategoriesQuery:
+def generate_categories_query(categories: CategoryList) -> CategoriesQuery or None:
+    if categories is None or len(categories) == 0:
+        return generate_categories_query(get_all_category_list())
     category_search_query_elements = []
     for category in categories:
         category_search_query_elements.append(generate_category_query(category))

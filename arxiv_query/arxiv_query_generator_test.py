@@ -1,5 +1,5 @@
 import unittest
-from arxiv_classification import arxiv_classification
+from arxiv_classification import get_computer_science_category_list, get_statistics_category_list
 from .arxiv_query_data import QueryData
 from .arxiv_query_options import sort_by, sort_order
 from .arxiv_query_generator import *
@@ -44,25 +44,25 @@ class QueryGeneratorTest(unittest.TestCase):
         self.assertEqual("all:%22machine+learning%22", keyword_query)
 
     def test_generate_category_query(self):
-        category = arxiv_classification["computer_science"]
+        category = get_computer_science_category_list()[0]
         category_query = generate_category_query(category)
-        self.assertEqual("cat:cs", category_query)
+        self.assertEqual("cat:cs.AI", category_query)
 
     def test_generate_categories_query(self):
-        categories = [arxiv_classification["computer_science"], arxiv_classification["statistics"]]
+        categories = [get_computer_science_category_list()[0], get_statistics_category_list()[0]]
         categories_query = generate_categories_query(categories)
-        self.assertEqual("%28cat:cs+OR+cat:stat%29", categories_query)
+        self.assertEqual("%28cat:cs.AI+OR+cat:stat.AP%29", categories_query)
 
     def test_generate_search_query(self):
         keyword = "machine learning"
-        categories = [arxiv_classification["computer_science"], arxiv_classification["statistics"]]
+        categories = [get_computer_science_category_list()[0], get_statistics_category_list()[0]]
         search_query = generate_search_query(keyword, categories)
-        self.assertEqual("search_query=all:%22machine+learning%22+AND+%28cat:cs+OR+cat:stat%29", search_query)
+        self.assertEqual("search_query=all:%22machine+learning%22+AND+%28cat:cs.AI+OR+cat:stat.AP%29", search_query)
 
     def test_generate_query_string(self):
         query_data = QueryData(
             "machine learning",
-            [arxiv_classification["computer_science"], arxiv_classification["statistics"]],
+            [get_computer_science_category_list()[0], get_statistics_category_list()[0]],
             sort_by["submittedDate"],
             sort_order["ascending"],
             start=0,
@@ -70,7 +70,7 @@ class QueryGeneratorTest(unittest.TestCase):
         )
         query_string = generate_query_string(query_data)
         self.assertEqual(
-            "search_query=all:%22machine+learning%22+AND+%28cat:cs+OR+cat:stat%29&"
+            "search_query=all:%22machine+learning%22+AND+%28cat:cs.AI+OR+cat:stat.AP%29&"
             "sortBy=submittedDate&"
             "sortOrder=ascending&"
             "start=0&"
